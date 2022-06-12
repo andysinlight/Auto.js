@@ -14,11 +14,6 @@ A JavaScript IDE on the Android platform that supports accessibility services, a
 
 And the [VS Code Extension](https://github.com/hyb1996/Auto.js-VSCode-Extension) which can provide basic functions for desktop development.
 
-Download: 
-* [Google Play](https://play.google.com/store/apps/details?id=org.autojs.autojspro)
-
-* [Coolapk](http://www.coolapk.com/apk/org.autojs.autojspro)
-
 Documentation: https://g.pro.autojs.org/docs
 
 ### Features
