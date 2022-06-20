@@ -2,36 +2,29 @@ package org.autojs.autojs.ui.doc;
 
 import android.app.Activity;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.webkit.WebView;
+
+import androidx.annotation.Nullable;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.stardust.util.BackPressedHandler;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.ui.main.QueryEvent;
 import org.autojs.autojs.ui.main.ViewPagerFragment;
-
-import com.stardust.util.BackPressedHandler;
-
 import org.autojs.autojs.ui.widget.EWebView;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by Stardust on 2017/8/22.
  */
-@EFragment(R.layout.fragment_online_docs)
 public class DocsFragment extends ViewPagerFragment implements BackPressedHandler {
 
     public static final String ARGUMENT_URL = "url";
 
-    @ViewById(R.id.eweb_view)
     EWebView mEWebView;
     WebView mWebView;
 
@@ -44,14 +37,25 @@ public class DocsFragment extends ViewPagerFragment implements BackPressedHandle
         setArguments(new Bundle());
     }
 
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.fragment_online_docs;
+    }
+
+    @Override
+    protected void findView() {
+        mEWebView=$(R.id.eweb_view);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
     }
 
-    @AfterViews
-    void setUpViews() {
+    @Override
+    protected void setUpViews() {
         mWebView = mEWebView.getWebView();
         mEWebView.getSwipeRefreshLayout().setOnRefreshListener(() -> {
             if (TextUtils.equals(mWebView.getUrl(), mIndexUrl)) {

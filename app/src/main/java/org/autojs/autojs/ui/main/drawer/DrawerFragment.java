@@ -2,73 +2,57 @@ package org.autojs.autojs.ui.main.drawer;
 
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.CustomViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.stardust.app.AppOpsKt;
+import com.stardust.app.BaseFragment;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.notification.NotificationListenerService;
+import com.stardust.theme.ThemeColorManager;
+import com.stardust.util.IntentUtil;
+import com.stardust.view.accessibility.AccessibilityService;
 
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.foreground.ForegroundService;
+import org.autojs.autojs.network.NodeBB;
 import org.autojs.autojs.network.UserService;
+import org.autojs.autojs.network.VersionService;
+import org.autojs.autojs.network.api.UserApi;
+import org.autojs.autojs.network.entity.VersionInfo;
+import org.autojs.autojs.network.entity.user.User;
+import org.autojs.autojs.pluginclient.DevPluginService;
+import org.autojs.autojs.theme.ThemeColorManagerCompat;
+import org.autojs.autojs.tool.AccessibilityServiceTool;
 import org.autojs.autojs.tool.Observers;
+import org.autojs.autojs.tool.SimpleObserver;
+import org.autojs.autojs.tool.WifiTool;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.floating.CircularMenu;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;
-import org.autojs.autojs.network.NodeBB;
-import org.autojs.autojs.network.VersionService;
-import org.autojs.autojs.network.api.UserApi;
-import org.autojs.autojs.network.entity.user.User;
-import org.autojs.autojs.network.entity.VersionInfo;
-import org.autojs.autojs.tool.SimpleObserver;
 import org.autojs.autojs.ui.main.MainActivity;
 import org.autojs.autojs.ui.main.community.CommunityFragment;
-import org.autojs.autojs.ui.user.LoginActivity_;
 import org.autojs.autojs.ui.settings.SettingsActivity;
 import org.autojs.autojs.ui.update.UpdateInfoDialogBuilder;
+import org.autojs.autojs.ui.user.LoginActivity;
 import org.autojs.autojs.ui.user.WebActivity;
-import org.autojs.autojs.ui.user.WebActivity_;
 import org.autojs.autojs.ui.widget.AvatarView;
-
-import com.stardust.theme.ThemeColorManager;
-
-import org.autojs.autojs.theme.ThemeColorManagerCompat;
-
-import com.stardust.view.accessibility.AccessibilityService;
-
-import org.autojs.autojs.pluginclient.DevPluginService;
-import org.autojs.autojs.tool.AccessibilityServiceTool;
-import org.autojs.autojs.tool.WifiTool;
-
-import com.stardust.util.IntentUtil;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.ui.widget.BackgroundTarget;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -87,22 +71,15 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Stardust on 2017/1/30.
  * TODO these codes are so ugly!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
-@EFragment(R.layout.fragment_drawer)
-public class DrawerFragment extends androidx.fragment.app.Fragment {
+public class DrawerFragment extends BaseFragment {
 
     private static final String URL_DEV_PLUGIN = "https://www.autojs.org/topic/968/";
 
-    @ViewById(R.id.header)
     View mHeaderView;
-    @ViewById(R.id.username)
     TextView mUserName;
-    @ViewById(R.id.avatar)
     AvatarView mAvatar;
-    @ViewById(R.id.shadow)
     View mShadow;
-    @ViewById(R.id.default_cover)
     View mDefaultCover;
-    @ViewById(R.id.drawer_menu)
     RecyclerView mDrawerMenu;
 
 
@@ -128,6 +105,22 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
     private Disposable mConnectionStateDisposable;
     private CommunityDrawerMenu mCommunityDrawerMenu = new CommunityDrawerMenu();
 
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.fragment_drawer;
+    }
+
+    @Override
+    protected void findView() {
+        mHeaderView = $(R.id.header);
+        mUserName = $(R.id.username);
+        mAvatar = $(R.id.avatar);
+        mShadow = $(R.id.shadow);
+        mDefaultCover = $(R.id.default_cover);
+        mDrawerMenu = $(R.id.drawer_menu);
+        $(R.id.avatar,view -> loginOrShowUserInfo());
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -147,8 +140,8 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
 
     }
 
-    @AfterViews
-    void setUpViews() {
+
+    protected void setUpViews() {
         ThemeColorManager.addViewBackground(mHeaderView);
         initMenuItems();
         if (Pref.isFloatingMenuShown()) {
@@ -187,7 +180,6 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
 
 
     @SuppressLint("CheckResult")
-    @Click(R.id.avatar)
     void loginOrShowUserInfo() {
         UserService.getInstance()
                 .me()
@@ -196,7 +188,7 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
                 .subscribe(user -> {
                             if (getActivity() == null)
                                 return;
-                            WebActivity_.intent(this)
+                            WebActivity.intent(this.getActivity()).setFragment(this)
                                     .extra(WebActivity.EXTRA_URL, NodeBB.url("user/" + user.getUserslug()))
                                     .extra(Intent.EXTRA_TITLE, user.getUsername())
                                     .start();
@@ -204,7 +196,7 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
                         error -> {
                             if (getActivity() == null)
                                 return;
-                            LoginActivity_.intent(getActivity()).start();
+                            LoginActivity.intent(getActivity()).start();
                         }
                 );
     }

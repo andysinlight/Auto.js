@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.tool.BitmapTool;
 import org.autojs.autojs.ui.BaseActivity;
@@ -27,7 +27,6 @@ import org.autojs.autojs.workground.WrapContentGridLayoutManger;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -35,19 +34,28 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Stardust on 2017/10/25.
  */
-@EActivity(R.layout.activity_shortcut_icon_select)
 public class ShortcutIconSelectActivity extends BaseActivity {
 
     public static final String EXTRA_PACKAGE_NAME = "extra_package_name";
 
-    @ViewById(R.id.apps)
     RecyclerView mApps;
 
     private PackageManager mPackageManager;
     private List<AppItem> mAppList = new ArrayList<>();
 
-    @AfterViews
-    void setupViews() {
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return  R.layout.activity_shortcut_icon_select;
+    }
+
+    @Override
+    protected void findView() {
+        mApps = $(R.id.apps);
+    }
+
+    @Override
+    protected void setupView() {
         mPackageManager = getPackageManager();
         setToolbarAsBack(getString(R.string.text_select_icon));
         setupApps();
@@ -97,6 +105,7 @@ public class ShortcutIconSelectActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             setResult(RESULT_OK, data);
             finish();

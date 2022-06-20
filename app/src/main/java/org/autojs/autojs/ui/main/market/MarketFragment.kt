@@ -41,6 +41,10 @@ class MarketFragment : ViewPagerFragment(0) {
         refresh()
     }
 
+    override fun getLayoutRes(): Int {
+        TODO("Not yet implemented")
+    }
+
     private fun refresh() {
         GlobalScope.launch(Dispatchers.Main) {
             swipeRefreshLayout.isRefreshing = true

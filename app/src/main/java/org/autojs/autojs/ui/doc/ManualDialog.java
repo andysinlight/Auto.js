@@ -75,7 +75,7 @@ public class ManualDialog {
     @OnClick(R.id.fullscreen)
     void viewInNewActivity() {
         mDialog.dismiss();
-        DocumentationActivity_.intent(mContext)
+        DocumentationActivity.intent(mContext)
                 .extra(DocumentationActivity.EXTRA_URL, mEWebView.getWebView().getUrl())
                 .start();
     }

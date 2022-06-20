@@ -6,14 +6,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
 
-import com.stardust.app.Fragment;
+import com.stardust.app.BaseFragment;
 import com.stardust.util.BackPressedHandler;
 
 /**
  * Created by Stardust on 2017/8/22.
  */
 
-public abstract class ViewPagerFragment extends Fragment implements BackPressedHandler {
+public abstract class ViewPagerFragment extends BaseFragment implements BackPressedHandler {
 
     protected static final int ROTATION_GONE = -1;
 

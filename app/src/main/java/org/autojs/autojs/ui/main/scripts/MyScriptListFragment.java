@@ -62,7 +62,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
     }
 
     @Override
-    protected void initView() {
+    protected void setUpViews() {
         ExplorerItemList.SortConfig sortConfig = ExplorerItemList.SortConfig.from(PreferenceManager.getDefaultSharedPreferences(getContext()));
         mExplorerView.setSortConfig(sortConfig);
         mExplorerView.setExplorer(Explorers.workspace(), ExplorerDirPage.createRoot(Pref.getScriptDirPath()));

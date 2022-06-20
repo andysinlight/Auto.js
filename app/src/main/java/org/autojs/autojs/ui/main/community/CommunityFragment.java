@@ -2,19 +2,17 @@ package org.autojs.autojs.ui.main.community;
 
 import android.app.Activity;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.webkit.WebView;
+
+import androidx.annotation.Nullable;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.stardust.util.BackPressedHandler;
 
 import org.autojs.autojs.R;
 import org.autojs.autojs.network.NodeBB;
 import org.autojs.autojs.ui.main.QueryEvent;
 import org.autojs.autojs.ui.main.ViewPagerFragment;
-import com.stardust.util.BackPressedHandler;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -23,7 +21,6 @@ import java.net.URLEncoder;
 /**
  * Created by Stardust on 2017/8/22.
  */
-@EFragment(R.layout.fragment_community)
 public class CommunityFragment extends ViewPagerFragment implements BackPressedHandler {
 
     public static class LoadUrl {
@@ -45,13 +42,24 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
 
     private static final String POSTS_PAGE_PATTERN = "[\\S\\s]+/topic/[0-9]+/[\\S\\s]+";
 
-    @ViewById(R.id.eweb_view)
     CommunityWebView mEWebView;
+
     WebView mWebView;
 
     public CommunityFragment() {
         super(0);
         setArguments(new Bundle());
+    }
+
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.fragment_community;
+    }
+
+    @Override
+    protected void findView() {
+         mEWebView = $(R.id.eweb_view);
     }
 
     @Override
@@ -60,8 +68,8 @@ public class CommunityFragment extends ViewPagerFragment implements BackPressedH
         EventBus.getDefault().register(this);
     }
 
-    @AfterViews
-    void setUpViews() {
+    @Override
+    protected void setUpViews() {
         mWebView = mEWebView.getWebView();
         String url = "https://www.autojs.org/";
         Bundle savedWebViewState = getArguments().getBundle("savedWebViewState");

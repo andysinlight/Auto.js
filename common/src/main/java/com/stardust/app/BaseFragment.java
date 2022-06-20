@@ -13,7 +13,7 @@ import com.stardust.util.ViewUtil;
  * Created by Stardust on 2017/1/30.
  */
 
-public abstract class Fragment extends androidx.fragment.app.Fragment {
+public abstract class BaseFragment extends androidx.fragment.app.Fragment {
 
     private View mView;
 
@@ -24,6 +24,13 @@ public abstract class Fragment extends androidx.fragment.app.Fragment {
 
     public <T extends View> T $(int id) {
         return ViewUtil.$(mView, id);
+    }
+
+    public void $(int resId, View.OnClickListener onClickListener) {
+        View clickView = findViewById(resId);
+        if (clickView != null && onClickListener != null) {
+            clickView.setOnClickListener(onClickListener);
+        }
     }
 
     public View findViewById(int id) {
@@ -39,11 +46,11 @@ public abstract class Fragment extends androidx.fragment.app.Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(getLayoutRes(), container, false);
         findView();
-        initView();
+        setUpViews();
         return mView;
     }
 
-    protected void initView() {
+    protected void setUpViews() {
 
     }
 
@@ -54,4 +61,10 @@ public abstract class Fragment extends androidx.fragment.app.Fragment {
 
     @Nullable
     public abstract int getLayoutRes();
+
+    public <T extends BaseFragment> T arg(String ars, boolean value){
+        return (T)this;
+    }
+    public <T extends BaseFragment> T arg(String ars, String value){ return (T)this;}
+    public <T extends BaseFragment> T arg(String ars, int value){ return (T)this;}
 }

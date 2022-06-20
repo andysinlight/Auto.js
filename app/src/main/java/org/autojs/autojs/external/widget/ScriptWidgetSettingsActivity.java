@@ -4,12 +4,11 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
+import androidx.annotation.Nullable;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.explorer.Explorer;
 import org.autojs.autojs.model.explorer.ExplorerDirPage;
@@ -21,12 +20,17 @@ import org.autojs.autojs.ui.explorer.ExplorerView;
 /**
  * Created by Stardust on 2017/7/11.
  */
-@EActivity(R.layout.activity_script_widget_settings)
 public class ScriptWidgetSettingsActivity extends BaseActivity {
 
     private String mSelectedScriptFilePath;
     private Explorer mExplorer;
     private int mAppWidgetId;
+
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.activity_script_widget_settings;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,8 +38,8 @@ public class ScriptWidgetSettingsActivity extends BaseActivity {
         mAppWidgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
-    @AfterViews
-    void setUpViews() {
+    @Override
+    protected void setupView() {
         BaseActivity.setToolbarAsBack(this, R.id.toolbar, getString(R.string.text_please_choose_a_script));
         initScriptListRecyclerView();
     }

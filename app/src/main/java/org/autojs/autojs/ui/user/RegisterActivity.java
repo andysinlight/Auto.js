@@ -1,22 +1,19 @@
 package org.autojs.autojs.ui.user;
 
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.theme.ThemeColorManager;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.network.NodeBB;
 import org.autojs.autojs.network.UserService;
 import org.autojs.autojs.ui.BaseActivity;
-import com.stardust.theme.ThemeColorManager;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -24,29 +21,37 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Stardust on 2017/10/26.
  */
-@EActivity(R.layout.activity_register)
 public class RegisterActivity extends BaseActivity {
 
-    @ViewById(R.id.email)
     TextView mEmail;
 
-    @ViewById(R.id.username)
     TextView mUserName;
 
-    @ViewById(R.id.password)
     TextView mPassword;
 
-    @ViewById(R.id.register)
     View mRegister;
 
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.activity_register;
+    }
 
-    @AfterViews
-    void setUpViews() {
+    @Override
+    protected void findView() {
+        mEmail = $(R.id.email);
+         mUserName= $(R.id.username);
+         mPassword= $(R.id.password);
+         mRegister= $(R.id.register);
+         $(R.id.register,view -> login());
+    }
+
+    @Override
+    protected void setupView() {
         setToolbarAsBack(getString(R.string.text_register));
         ThemeColorManager.addViewBackground(mRegister);
     }
 
-    @Click(R.id.register)
     void login() {
         String email = mEmail.getText().toString();
         String userName = mUserName.getText().toString();

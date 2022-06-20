@@ -3,15 +3,16 @@ package org.autojs.autojs.ui.edit.toolbar;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import android.view.View;
+
+import com.stardust.app.BaseFragment;
 
 import org.autojs.autojs.ui.edit.EditorView;
 
 import java.util.List;
 
-public abstract class ToolbarFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
+public abstract class ToolbarFragment extends BaseFragment implements View.OnClickListener, View.OnLongClickListener {
 
 
     public interface OnMenuItemClickListener {

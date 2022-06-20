@@ -10,27 +10,23 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.util.SparseBooleanArray;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.util.SparseBooleanArray;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.Toast;
-
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.stardust.autojs.engine.JavaScriptEngine;
 import com.stardust.autojs.engine.ScriptEngine;
 import com.stardust.autojs.execution.ScriptExecution;
@@ -39,9 +35,6 @@ import com.stardust.util.BackPressedHandler;
 import com.stardust.util.Callback;
 import com.stardust.util.ViewUtils;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EViewGroup;
-import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.AutoJs;
@@ -62,13 +55,10 @@ import org.autojs.autojs.ui.edit.keyboard.FunctionsKeyboardView;
 import org.autojs.autojs.ui.edit.theme.Theme;
 import org.autojs.autojs.ui.edit.theme.Themes;
 import org.autojs.autojs.ui.edit.toolbar.DebugToolbarFragment;
-import org.autojs.autojs.ui.edit.toolbar.DebugToolbarFragment_;
 import org.autojs.autojs.ui.edit.toolbar.NormalToolbarFragment;
-import org.autojs.autojs.ui.edit.toolbar.NormalToolbarFragment_;
 import org.autojs.autojs.ui.edit.toolbar.SearchToolbarFragment;
-import org.autojs.autojs.ui.edit.toolbar.SearchToolbarFragment_;
 import org.autojs.autojs.ui.edit.toolbar.ToolbarFragment;
-import org.autojs.autojs.ui.log.LogActivity_;
+import org.autojs.autojs.ui.log.LogActivity;
 import org.autojs.autojs.ui.widget.EWebView;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 
@@ -87,7 +77,6 @@ import static org.autojs.autojs.model.script.Scripts.EXTRA_EXCEPTION_MESSAGE;
 /**
  * Created by Stardust on 2017/9/28.
  */
-@EViewGroup(R.layout.editor_view)
 public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintClickListener, FunctionsKeyboardView.ClickCallback, ToolbarFragment.OnMenuItemClickListener {
 
     public static final String EXTRA_PATH = "path";
@@ -97,31 +86,22 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     public static final String EXTRA_SAVE_ENABLED = "saveEnabled";
     public static final String EXTRA_RUN_ENABLED = "runEnabled";
 
-    @ViewById(R.id.editor)
     CodeEditor mEditor;
 
-    @ViewById(R.id.code_completion_bar)
     CodeCompletionBar mCodeCompletionBar;
 
-    @ViewById(R.id.input_method_enhance_bar)
     View mInputMethodEnhanceBar;
 
-    @ViewById(R.id.symbol_bar)
     CodeCompletionBar mSymbolBar;
 
-    @ViewById(R.id.functions)
     ImageView mShowFunctionsButton;
 
-    @ViewById(R.id.functions_keyboard)
     FunctionsKeyboardView mFunctionsKeyboard;
 
-    @ViewById(R.id.debug_bar)
     DebugBar mDebugBar;
 
-    @ViewById(R.id.docs)
     EWebView mDocsWebView;
 
-    @ViewById(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
     private String mName;
@@ -155,7 +135,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     private SparseBooleanArray mMenuItemStatus = new SparseBooleanArray();
     private String mRestoredText;
-    private NormalToolbarFragment mNormalToolbar = new NormalToolbarFragment_();
+    private NormalToolbarFragment mNormalToolbar = new NormalToolbarFragment();
     private boolean mDebugging = false;
 
     public EditorView(Context context) {
@@ -168,6 +148,17 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     public EditorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        View.inflate(getContext(),R.layout.editor_view,this);
+         mEditor =findViewById(R.id.editor);
+         mCodeCompletionBar=findViewById(R.id.code_completion_bar);
+         mInputMethodEnhanceBar=findViewById(R.id.input_method_enhance_bar);
+         mSymbolBar=findViewById(R.id.symbol_bar);
+         mShowFunctionsButton=findViewById(R.id.functions);
+         mFunctionsKeyboard=findViewById(R.id.functions_keyboard);
+         mDebugBar=findViewById(R.id.debug_bar);
+         mDocsWebView=findViewById(R.id.docs);
+         mDrawerLayout=findViewById(R.id.drawer_layout);
+        init();
     }
 
     @Override
@@ -277,7 +268,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
         return mMenuItemStatus.get(id, defValue);
     }
 
-    @AfterViews
+
     void init() {
         //setTheme(Theme.getDefault(getContext()));
         setUpEditor();
@@ -564,9 +555,8 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
     }
 
     private void showSearchToolbar(boolean showReplaceItem) {
-        SearchToolbarFragment searchToolbarFragment = SearchToolbarFragment_.builder()
-                .arg(SearchToolbarFragment.ARGUMENT_SHOW_REPLACE_ITEM, showReplaceItem)
-                .build();
+        SearchToolbarFragment searchToolbarFragment = new SearchToolbarFragment()
+                .arg(SearchToolbarFragment.ARGUMENT_SHOW_REPLACE_ITEM, showReplaceItem);
         searchToolbarFragment.setOnMenuItemClickListener(this);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.toolbar_menu, searchToolbarFragment)
@@ -584,8 +574,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
 
     public void debug() {
-        DebugToolbarFragment debugToolbarFragment = DebugToolbarFragment_.builder()
-                .build();
+        DebugToolbarFragment debugToolbarFragment = new DebugToolbarFragment();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.toolbar_menu, debugToolbarFragment)
                 .commit();
@@ -609,7 +598,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     private void showErrorMessage(String msg) {
         Snackbar.make(EditorView.this, getResources().getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG)
-                .setAction(R.string.text_detail, v -> LogActivity_.intent(getContext()).start())
+                .setAction(R.string.text_detail, v -> LogActivity.intent(getContext()).start())
                 .show();
     }
 
