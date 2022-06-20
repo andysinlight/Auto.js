@@ -3,15 +3,13 @@ package org.autojs.autojs.ui.main.scripts;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.Nullable;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.util.IntentUtil;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.external.fileprovider.AppFileProvider;
@@ -25,7 +23,6 @@ import org.autojs.autojs.ui.main.FloatingActionMenu;
 import org.autojs.autojs.ui.main.QueryEvent;
 import org.autojs.autojs.ui.main.ViewPagerFragment;
 import org.autojs.autojs.ui.project.ProjectConfigActivity;
-import org.autojs.autojs.ui.project.ProjectConfigActivity_;
 import org.autojs.autojs.ui.viewmodel.ExplorerItemList;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -35,7 +32,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 /**
  * Created by Stardust on 2017/3/13.
  */
-@EFragment(R.layout.fragment_my_script_list)
 public class MyScriptListFragment extends ViewPagerFragment implements FloatingActionMenu.OnFloatingActionButtonClickListener {
 
     private static final String TAG = "MyScriptListFragment";
@@ -44,10 +40,20 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
         super(0);
     }
 
-    @ViewById(R.id.script_file_list)
     ExplorerView mExplorerView;
 
     private FloatingActionMenu mFloatingActionMenu;
+
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.fragment_my_script_list;
+    }
+
+    @Override
+    protected void findView() {
+        mExplorerView = $(R.id.script_file_list);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,8 +61,8 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
         EventBus.getDefault().register(this);
     }
 
-    @AfterViews
-    void setUpViews() {
+    @Override
+    protected void initView() {
         ExplorerItemList.SortConfig sortConfig = ExplorerItemList.SortConfig.from(PreferenceManager.getDefaultSharedPreferences(getContext()));
         mExplorerView.setSortConfig(sortConfig);
         mExplorerView.setExplorer(Explorers.workspace(), ExplorerDirPage.createRoot(Pref.getScriptDirPath()));
@@ -170,7 +176,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
                         .importFile();
                 break;
             case 3:
-                ProjectConfigActivity_.intent(getContext())
+                ProjectConfigActivity.intent(getContext())
                         .extra(ProjectConfigActivity.EXTRA_PARENT_DIRECTORY, mExplorerView.getCurrentPage().getPath())
                         .extra(ProjectConfigActivity.EXTRA_NEW_PROJECT, true)
                         .start();

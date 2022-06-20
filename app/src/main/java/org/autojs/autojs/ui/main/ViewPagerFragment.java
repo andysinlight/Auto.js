@@ -2,10 +2,11 @@ package org.autojs.autojs.ui.main;
 
 import androidx.annotation.CallSuper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
+
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import android.view.View;
 
+import com.stardust.app.Fragment;
 import com.stardust.util.BackPressedHandler;
 
 /**

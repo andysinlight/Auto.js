@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,15 +11,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.pio.PFiles;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.R;
 import org.autojs.autojs.model.explorer.ExplorerDirPage;
 import org.autojs.autojs.model.explorer.ExplorerFileItem;
@@ -29,7 +26,6 @@ import org.autojs.autojs.model.project.ProjectTemplate;
 import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity;
-import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity_;
 import org.autojs.autojs.ui.widget.SimpleTextWatcher;
 
 import java.io.File;
@@ -40,7 +36,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-@EActivity(R.layout.activity_project_config)
 public class ProjectConfigActivity extends BaseActivity {
 
     public static final String EXTRA_PARENT_DIRECTORY = "parent_directory";
@@ -52,26 +47,18 @@ public class ProjectConfigActivity extends BaseActivity {
     private static final int REQUEST_CODE = 12477;
     private static final Pattern REGEX_PACKAGE_NAME = Pattern.compile("^([A-Za-z][A-Za-z\\d_]*\\.)+([A-Za-z][A-Za-z\\d_]*)$");
 
-
-    @ViewById(R.id.project_location)
     EditText mProjectLocation;
 
-    @ViewById(R.id.app_name)
     EditText mAppName;
 
-    @ViewById(R.id.package_name)
     EditText mPackageName;
 
-    @ViewById(R.id.version_name)
     EditText mVersionName;
 
-    @ViewById(R.id.version_code)
     EditText mVersionCode;
 
-    @ViewById(R.id.main_file_name)
     EditText mMainFileName;
 
-    @ViewById(R.id.icon)
     ImageView mIcon;
 
     private File mDirectory;
@@ -79,6 +66,12 @@ public class ProjectConfigActivity extends BaseActivity {
     private ProjectConfig mProjectConfig;
     private boolean mNewProject;
     private Bitmap mIconBitmap;
+
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.activity_project_config;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,8 +103,21 @@ public class ProjectConfigActivity extends BaseActivity {
         }
     }
 
-    @AfterViews
-    void setupViews() {
+    @Override
+    protected void findView() {
+        mProjectLocation = $(R.id.project_location);
+        mAppName = $(R.id.app_name);
+        mPackageName = $(R.id.package_name);
+        mVersionName = $(R.id.version_name);
+        mVersionCode = $(R.id.version_code);
+        mMainFileName = $(R.id.main_file_name);
+        mIcon = $(R.id.icon);
+        $(R.id.fab, view -> commit());
+        $(R.id.icon, view -> selectIcon());
+    }
+
+    @Override
+    protected void setupView() {
         if (mProjectConfig == null) {
             return;
         }
@@ -137,7 +143,6 @@ public class ProjectConfigActivity extends BaseActivity {
     }
 
     @SuppressLint("CheckResult")
-    @Click(R.id.fab)
     void commit() {
         if (!checkInputs()) {
             return;
@@ -186,9 +191,8 @@ public class ProjectConfigActivity extends BaseActivity {
         }
     }
 
-    @Click(R.id.icon)
     void selectIcon() {
-        ShortcutIconSelectActivity_.intent(this)
+        ShortcutIconSelectActivity.intent(this)
                 .startForResult(REQUEST_CODE);
     }
 
@@ -242,6 +246,7 @@ public class ProjectConfigActivity extends BaseActivity {
     @SuppressLint("CheckResult")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) {
             return;
         }
@@ -273,7 +278,6 @@ public class ProjectConfigActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(iconPath -> mProjectConfig.setIcon(iconPath));
-
     }
 
 }

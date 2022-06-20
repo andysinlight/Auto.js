@@ -83,7 +83,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
 
     @OnClick(R.id.icon)
     void selectIcon() {
-        ShortcutIconSelectActivity_.intent(this)
+        ShortcutIconSelectActivity.intent(this)
                 .startForResult(21209);
     }
 
@@ -135,6 +135,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) {
             return;
         }
@@ -149,7 +150,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
             return;
         }
         Uri uri = data.getData();
-        if(uri == null){
+        if (uri == null) {
             return;
         }
         Observable.fromCallable(() -> BitmapFactory.decodeStream(getContentResolver().openInputStream(uri)))

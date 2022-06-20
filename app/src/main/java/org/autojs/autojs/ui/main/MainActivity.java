@@ -4,23 +4,21 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.core.view.GravityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
-
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.stardust.app.FragmentPagerAdapterBuilder;
 import com.stardust.app.OnActivityResultDelegate;
@@ -34,10 +32,6 @@ import com.stardust.util.BackPressedHandler;
 import com.stardust.util.DeveloperUtils;
 import com.stardust.util.DrawerAutoClose;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
@@ -47,15 +41,14 @@ import org.autojs.autojs.model.explorer.Explorers;
 import org.autojs.autojs.tool.AccessibilityServiceTool;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.common.NotAskAgainDialog;
-import org.autojs.autojs.ui.doc.DocsFragment_;
+import org.autojs.autojs.ui.doc.DocsFragment;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;
-import org.autojs.autojs.ui.log.LogActivity_;
+import org.autojs.autojs.ui.log.LogActivity;
 import org.autojs.autojs.ui.main.community.CommunityFragment;
-import org.autojs.autojs.ui.main.community.CommunityFragment_;
 import org.autojs.autojs.ui.main.market.MarketFragment;
-import org.autojs.autojs.ui.main.scripts.MyScriptListFragment_;
-import org.autojs.autojs.ui.main.task.TaskManagerFragment_;
-import org.autojs.autojs.ui.settings.SettingsActivity_;
+import org.autojs.autojs.ui.main.scripts.MyScriptListFragment;
+import org.autojs.autojs.ui.main.task.TaskManagerFragment;
+import org.autojs.autojs.ui.settings.SettingsActivity;
 import org.autojs.autojs.ui.update.VersionGuard;
 import org.autojs.autojs.ui.widget.CommonMarkdownView;
 import org.autojs.autojs.ui.widget.SearchViewItem;
@@ -64,7 +57,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Arrays;
 
-@EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity implements OnActivityResultDelegate.DelegateHost, BackPressedHandler.HostActivity, PermissionRequestProxyActivity {
 
     public static class DrawerOpenEvent {
@@ -73,13 +65,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     private static final String LOG_TAG = "MainActivity";
 
-    @ViewById(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
-    @ViewById(R.id.viewpager)
     ViewPager mViewPager;
 
-    @ViewById(R.id.fab)
     FloatingActionButton mFab;
 
     private FragmentPagerAdapterBuilder.StoredFragmentPagerAdapter mPagerAdapter;
@@ -91,6 +80,20 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private MenuItem mLogMenuItem;
     private boolean mDocsSearchItemExpanded;
 
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void findView() {
+        mDrawerLayout=$(R.id.drawer_layout);
+        mViewPager=$(R.id.viewpager);
+        mFab=$(R.id.fab);
+        $(R.id.setting,view -> startSettingActivity());
+        $(R.id.exit,view -> exitCompletely());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +106,8 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
         applyDayNightMode();
     }
 
-    @AfterViews
-    void setUpViews() {
+    @Override
+    protected void setupView() {
         setUpToolbar();
         setUpTabViewPager();
         getWindow().getDecorView().setSystemUiVisibility(
@@ -169,11 +172,11 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     private void setUpTabViewPager() {
         TabLayout tabLayout = $(R.id.tab);
         mPagerAdapter = new FragmentPagerAdapterBuilder(this)
-                .add(new MyScriptListFragment_(), R.string.text_file)
-                .add(new DocsFragment_(), R.string.text_tutorial)
-                .add(new CommunityFragment_(), R.string.text_community)
+                .add(new MyScriptListFragment(), R.string.text_file)
+                .add(new DocsFragment(), R.string.text_tutorial)
+                .add(new CommunityFragment(), R.string.text_community)
                 .add(new MarketFragment(), R.string.text_market)
-                .add(new TaskManagerFragment_(), R.string.text_manage)
+                .add(new TaskManagerFragment(), R.string.text_manage)
                 .build();
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
@@ -205,12 +208,10 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
     }
 
 
-    @Click(R.id.setting)
     void startSettingActivity() {
-        startActivity(new Intent(this, SettingsActivity_.class));
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
-    @Click(R.id.exit)
     public void exitCompletely() {
         finish();
         FloatyWindowManger.hideCircularMenu();
@@ -232,6 +233,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         mActivityResultMediator.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -314,7 +316,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             if (mDocsSearchItemExpanded) {
                 submitForwardQuery();
             } else {
-                LogActivity_.intent(this).start();
+                LogActivity.intent(this).start();
             }
             return true;
         }

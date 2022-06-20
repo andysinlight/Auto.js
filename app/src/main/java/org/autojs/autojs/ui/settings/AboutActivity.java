@@ -4,36 +4,47 @@ import android.annotation.SuppressLint;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.afollestad.materialdialogs.MaterialDialog;
-import org.autojs.autojs.tool.IntentTool;
-import org.autojs.autojs.ui.BaseActivity;
-import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
 import com.stardust.util.IntentUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import org.autojs.autojs.BuildConfig;
 import org.autojs.autojs.R;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
+import org.autojs.autojs.theme.dialog.ThemeColorMaterialDialogBuilder;
+import org.autojs.autojs.tool.IntentTool;
+import org.autojs.autojs.ui.BaseActivity;
 
 /**
  * Created by Stardust on 2017/2/2.
  */
-@EActivity(R.layout.activity_about)
 public class AboutActivity extends BaseActivity {
 
     private static final String TAG = "AboutActivity";
-    @ViewById(R.id.version)
     TextView mVersion;
 
     private int mLolClickCount = 0;
 
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.activity_about;
+    }
 
-    @AfterViews
-    void setUpViews() {
+    @Override
+    protected void findView() {
+        mVersion = $(R.id.version);
+        $(R.id.github,view -> openGitHub());
+        $(R.id.qq,view -> openQQToChatWithMe());
+        $(R.id.email,view -> openEmailToSendMe());
+        $(R.id.share,view -> share());
+        $(R.id.icon,view -> lol());
+        $(R.id.developer,view -> hhh());
+    }
+
+    @Override
+    protected void setupView() {
         setVersionName();
         setToolbarAsBack(getString(R.string.text_about));
     }
@@ -43,12 +54,10 @@ public class AboutActivity extends BaseActivity {
         mVersion.setText("Version " + BuildConfig.VERSION_NAME);
     }
 
-    @Click(R.id.github)
     void openGitHub() {
         IntentTool.browse(this, getString(R.string.my_github));
     }
 
-    @Click(R.id.qq)
     void openQQToChatWithMe() {
         String qq = getString(R.string.qq);
         if (!IntentUtil.chatWithQQ(this, qq)) {
@@ -56,19 +65,15 @@ public class AboutActivity extends BaseActivity {
         }
     }
 
-    @Click(R.id.email)
     void openEmailToSendMe() {
         String email = getString(R.string.email);
         IntentUtil.sendMailTo(this, email);
     }
 
-
-    @Click(R.id.share)
     void share() {
         IntentUtil.shareText(this, getString(R.string.share_app));
     }
 
-    @Click(R.id.icon)
     void lol() {
         mLolClickCount++;
         //Toast.makeText(this, R.string.text_lll, Toast.LENGTH_LONG).show();
@@ -93,10 +98,7 @@ public class AboutActivity extends BaseActivity {
                 }).show();
     }
 
-    @Click(R.id.developer)
     void hhh() {
         Toast.makeText(this, R.string.text_it_is_the_developer_of_app, Toast.LENGTH_LONG).show();
     }
-
-
 }

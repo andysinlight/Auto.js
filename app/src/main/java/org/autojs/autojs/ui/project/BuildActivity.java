@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,15 +13,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.textfield.TextInputLayout;
 import com.stardust.autojs.project.ProjectConfig;
 import com.stardust.util.IntentUtil;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import org.autojs.autojs.Pref;
 import org.autojs.autojs.R;
 import org.autojs.autojs.autojs.build.ApkBuilder;
@@ -35,7 +32,6 @@ import org.autojs.autojs.tool.BitmapTool;
 import org.autojs.autojs.ui.BaseActivity;
 import org.autojs.autojs.ui.filechooser.FileChooserDialogBuilder;
 import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity;
-import org.autojs.autojs.ui.shortcut.ShortcutIconSelectActivity_;
 
 import java.io.File;
 import java.io.InputStream;
@@ -43,7 +39,6 @@ import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
-import androidx.cardview.widget.CardView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -51,7 +46,6 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Stardust on 2017/10/22.
  */
-@EActivity(R.layout.activity_build)
 public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCallback {
 
     private static final int REQUEST_CODE = 44401;
@@ -61,31 +55,22 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
     private static final String LOG_TAG = "BuildActivity";
     private static final Pattern REGEX_PACKAGE_NAME = Pattern.compile("^([A-Za-z][A-Za-z\\d_]*\\.)+([A-Za-z][A-Za-z\\d_]*)$");
 
-    @ViewById(R.id.source_path)
     EditText mSourcePath;
 
-    @ViewById(R.id.source_path_container)
     View mSourcePathContainer;
 
-    @ViewById(R.id.output_path)
     EditText mOutputPath;
 
-    @ViewById(R.id.app_name)
     EditText mAppName;
 
-    @ViewById(R.id.package_name)
     EditText mPackageName;
 
-    @ViewById(R.id.version_name)
     EditText mVersionName;
 
-    @ViewById(R.id.version_code)
     EditText mVersionCode;
 
-    @ViewById(R.id.icon)
     ImageView mIcon;
 
-    @ViewById(R.id.app_config)
     CardView mAppConfig;
 
     private ProjectConfig mProjectConfig;
@@ -98,8 +83,40 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
         super.onCreate(savedInstanceState);
     }
 
-    @AfterViews
-    void setupViews() {
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.activity_build;
+    }
+
+    @Override
+    protected void findView() {
+        mSourcePath = $(R.id.source_path);
+
+        mSourcePathContainer = $(R.id.source_path_container);
+
+        mOutputPath = $(R.id.output_path);
+
+        mAppName = $(R.id.app_name);
+
+        mPackageName = $(R.id.package_name);
+
+        mVersionName = $(R.id.version_name);
+
+        mVersionCode = $(R.id.version_code);
+
+        mIcon = $(R.id.icon);
+
+        mAppConfig = $(R.id.app_config);
+
+        $(R.id.select_source, view -> selectSourceFilePath());
+        $(R.id.select_output, view -> selectOutputDirPath());
+        $(R.id.icon, view -> selectIcon());
+        $(R.id.fab, view -> buildApk());
+
+    }
+
+    protected void setupView() {
         setToolbarAsBack(getString(R.string.text_build_apk));
         mSource = getIntent().getStringExtra(EXTRA_SOURCE);
         if (mSource != null) {
@@ -158,7 +175,6 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
 
     }
 
-    @Click(R.id.select_source)
     void selectSourceFilePath() {
         String initialDir = new File(mSourcePath.getText().toString()).getParent();
         new FileChooserDialogBuilder(this)
@@ -183,7 +199,6 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
         mSourcePathContainer.setVisibility(View.GONE);
     }
 
-    @Click(R.id.select_output)
     void selectOutputDirPath() {
         String initialDir = new File(mOutputPath.getText().toString()).exists() ?
                 mOutputPath.getText().toString() : Pref.getScriptDirPath();
@@ -195,13 +210,11 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
                 .show();
     }
 
-    @Click(R.id.icon)
     void selectIcon() {
-        ShortcutIconSelectActivity_.intent(this)
+        ShortcutIconSelectActivity.intent(this)
                 .startForResult(REQUEST_CODE);
     }
 
-    @Click(R.id.fab)
     void buildApk() {
         if (!ApkBuilderPluginHelper.isPluginAvailable(this)) {
             Toast.makeText(this, R.string.text_apk_builder_plugin_unavailable, Toast.LENGTH_SHORT).show();
@@ -351,6 +364,7 @@ public class BuildActivity extends BaseActivity implements ApkBuilder.ProgressCa
     @SuppressLint("CheckResult")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) {
             return;
         }

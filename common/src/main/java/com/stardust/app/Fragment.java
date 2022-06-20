@@ -37,12 +37,21 @@ public abstract class Fragment extends androidx.fragment.app.Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = createView(inflater, container, savedInstanceState);
+        mView = inflater.inflate(getLayoutRes(), container, false);
+        findView();
+        initView();
         return mView;
     }
 
+    protected void initView() {
+
+    }
+
+    protected void findView(){
+
+    }
+
+
     @Nullable
-    public abstract View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState);
-
-
+    public abstract int getLayoutRes();
 }

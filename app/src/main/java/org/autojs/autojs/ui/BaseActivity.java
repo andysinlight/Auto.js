@@ -1,5 +1,8 @@
 package org.autojs.autojs.ui;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -8,6 +11,7 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -16,6 +20,8 @@ import android.view.Menu;
 import android.view.View;
 
 import com.stardust.app.GlobalAppContext;
+import com.stardust.app.api.ActivityIntentBuilder;
+import com.stardust.app.api.PostActivityStarter;
 import com.stardust.theme.ThemeColorManager;
 
 import org.autojs.autojs.Pref;
@@ -40,6 +46,18 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int layoutRes = getLayoutRes();
+        if (layoutRes != -1) {
+            setContentView(layoutRes);
+        }
+    }
+
+    protected void findView() {
+
+    }
+
+    protected void setupView() {
+
     }
 
     protected void applyDayNightMode() {
@@ -67,12 +85,23 @@ public abstract class BaseActivity extends AppCompatActivity {
         if ((getWindow().getDecorView().getSystemUiVisibility() & View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) == 0) {
             ThemeColorManager.addActivityStatusBar(this);
         }
+    }
 
+    @Nullable
+    public int getLayoutRes(){
+        return -1;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends View> T $(int resId) {
         return (T) findViewById(resId);
+    }
+
+    public void $(int resId, View.OnClickListener onClickListener) {
+        View clickView = findViewById(resId);
+        if (clickView != null && onClickListener != null) {
+            clickView.setOnClickListener(onClickListener);
+        }
     }
 
     protected boolean checkPermission(String... permissions) {
@@ -142,5 +171,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public static ActivityIntentBuilder intent(Context context){
+        return new ActivityIntentBuilder(context,new Intent());
     }
 }

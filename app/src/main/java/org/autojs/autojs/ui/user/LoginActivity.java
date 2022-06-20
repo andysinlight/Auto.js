@@ -7,18 +7,15 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stardust.theme.ThemeColorManager;
+
 import org.autojs.autojs.R;
 import org.autojs.autojs.network.NodeBB;
 import org.autojs.autojs.network.UserService;
 import org.autojs.autojs.ui.BaseActivity;
-import com.stardust.theme.ThemeColorManager;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-import org.w3c.dom.Node;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -26,25 +23,35 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Stardust on 2017/9/20.
  */
-@EActivity(R.layout.activity_login)
 public class LoginActivity extends BaseActivity {
 
-    @ViewById(R.id.username)
     TextView mUserName;
 
-    @ViewById(R.id.password)
     TextView mPassword;
 
-    @ViewById(R.id.login)
     View mLogin;
 
-    @AfterViews
-    void setUpViews() {
+    @Nullable
+    @Override
+    public int getLayoutRes() {
+        return R.layout.activity_login;
+    }
+
+    @Override
+    protected void findView() {
+        mUserName=$(R.id.username);
+        mPassword=$(R.id.password);
+        mLogin=$(R.id.login);
+        $(R.id.login,view -> login());
+        $(R.id.forgot_password,view -> forgotPassword());
+    }
+
+    @Override
+    protected void setupView() {
         setToolbarAsBack(getString(R.string.text_login));
         ThemeColorManager.addViewBackground(mLogin);
     }
 
-    @Click(R.id.login)
     void login() {
         String userName = mUserName.getText().toString();
         String password = mPassword.getText().toString();
@@ -71,9 +78,8 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    @Click(R.id.forgot_password)
     void forgotPassword() {
-        WebActivity_.intent(this)
+        WebActivity.intent(this)
                 .extra(WebActivity.EXTRA_URL, NodeBB.BASE_URL + "reset")
                 .extra(Intent.EXTRA_TITLE, getString(R.string.text_reset_password))
                 .start();
@@ -101,7 +107,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_register) {
-            RegisterActivity_.intent(this).start();
+            RegisterActivity.intent(this).start();
             finish();
         }
         return super.onOptionsItemSelected(item);
