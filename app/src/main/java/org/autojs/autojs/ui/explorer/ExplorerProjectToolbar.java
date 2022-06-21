@@ -56,7 +56,7 @@ public class ExplorerProjectToolbar extends CardView {
 
     public void setProject(PFile dir) {
         mProjectConfig = ProjectConfig.fromProjectDir(dir.getPath());
-        if(mProjectConfig == null){
+        if (mProjectConfig == null) {
             setVisibility(GONE);
             return;
         }
@@ -83,7 +83,7 @@ public class ExplorerProjectToolbar extends CardView {
 
     @OnClick(R.id.build)
     void build() {
-        BuildActivity.intent(getContext())
+        BuildActivity.intent(getContext(), BuildActivity.class)
                 .extra(BuildActivity.EXTRA_SOURCE, mDirectory.getPath())
                 .start();
     }
@@ -118,7 +118,7 @@ public class ExplorerProjectToolbar extends CardView {
     }
 
     void edit() {
-        ProjectConfigActivity.intent(getContext())
+        ProjectConfigActivity.intent(getContext(), ProjectConfigActivity.class)
                 .extra(ProjectConfigActivity.EXTRA_DIRECTORY, mDirectory.getPath())
                 .start();
     }

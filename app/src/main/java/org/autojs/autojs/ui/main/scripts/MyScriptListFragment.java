@@ -176,7 +176,7 @@ public class MyScriptListFragment extends ViewPagerFragment implements FloatingA
                         .importFile();
                 break;
             case 3:
-                ProjectConfigActivity.intent(getContext())
+                ProjectConfigActivity.intent(getContext(), ProjectConfigActivity.class)
                         .extra(ProjectConfigActivity.EXTRA_PARENT_DIRECTORY, mExplorerView.getCurrentPage().getPath())
                         .extra(ProjectConfigActivity.EXTRA_NEW_PROJECT, true)
                         .start();

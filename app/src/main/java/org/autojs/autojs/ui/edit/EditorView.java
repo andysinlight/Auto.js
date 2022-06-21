@@ -148,16 +148,16 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     public EditorView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        View.inflate(getContext(),R.layout.editor_view,this);
-         mEditor =findViewById(R.id.editor);
-         mCodeCompletionBar=findViewById(R.id.code_completion_bar);
-         mInputMethodEnhanceBar=findViewById(R.id.input_method_enhance_bar);
-         mSymbolBar=findViewById(R.id.symbol_bar);
-         mShowFunctionsButton=findViewById(R.id.functions);
-         mFunctionsKeyboard=findViewById(R.id.functions_keyboard);
-         mDebugBar=findViewById(R.id.debug_bar);
-         mDocsWebView=findViewById(R.id.docs);
-         mDrawerLayout=findViewById(R.id.drawer_layout);
+        View.inflate(getContext(), R.layout.editor_view, this);
+        mEditor = findViewById(R.id.editor);
+        mCodeCompletionBar = findViewById(R.id.code_completion_bar);
+        mInputMethodEnhanceBar = findViewById(R.id.input_method_enhance_bar);
+        mSymbolBar = findViewById(R.id.symbol_bar);
+        mShowFunctionsButton = findViewById(R.id.functions);
+        mFunctionsKeyboard = findViewById(R.id.functions_keyboard);
+        mDebugBar = findViewById(R.id.debug_bar);
+        mDocsWebView = findViewById(R.id.docs);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         init();
     }
 
@@ -598,7 +598,7 @@ public class EditorView extends FrameLayout implements CodeCompletionBar.OnHintC
 
     private void showErrorMessage(String msg) {
         Snackbar.make(EditorView.this, getResources().getString(R.string.text_error) + ": " + msg, Snackbar.LENGTH_LONG)
-                .setAction(R.string.text_detail, v -> LogActivity.intent(getContext()).start())
+                .setAction(R.string.text_detail, v -> LogActivity.intent(getContext(), LogActivity.class).start())
                 .show();
     }
 

@@ -83,7 +83,7 @@ public class ShortcutCreateActivity extends AppCompatActivity {
 
     @OnClick(R.id.icon)
     void selectIcon() {
-        ShortcutIconSelectActivity.intent(this)
+        ShortcutIconSelectActivity.intent(this,ShortcutIconSelectActivity.class)
                 .startForResult(21209);
     }
 

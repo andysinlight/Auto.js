@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -30,7 +31,7 @@ public class ForegroundService extends Service {
         }
     }
 
-    public static void stop(Context context){
+    public static void stop(Context context) {
         context.stopService(new Intent(context, ForegroundService.class));
     }
 
@@ -54,7 +55,7 @@ public class ForegroundService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel();
         }
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, MainActivity.intent(this).get(), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, MainActivity.intent(this, MainActivity.class).get(), 0);
         return new NotificationCompat.Builder(this, CHANEL_ID)
                 .setContentTitle(getString(R.string.foreground_notification_title))
                 .setContentText(getString(R.string.foreground_notification_text))

@@ -248,7 +248,7 @@ public class TaskListRecyclerView extends ThemeColorRecyclerView {
                 Task.PendingTask task = (Task.PendingTask) mTask;
                 String extra = task.getTimedTask() == null ? TimedTaskSettingActivity.EXTRA_INTENT_TASK_ID
                         : TimedTaskSettingActivity.EXTRA_TASK_ID;
-                TimedTaskSettingActivity.intent(getContext())
+                TimedTaskSettingActivity.intent(getContext(),TimedTaskSettingActivity.class)
                         .extra(extra, task.getId())
                         .start();
             }

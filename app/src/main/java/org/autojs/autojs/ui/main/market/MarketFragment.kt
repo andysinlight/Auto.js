@@ -27,10 +27,6 @@ class MarketFragment : ViewPagerFragment(0) {
 
     private val mTopics = ArrayList<Topic>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_market, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         topicsView.layoutManager = WrapContentLinearLayoutManager(context)
@@ -42,7 +38,11 @@ class MarketFragment : ViewPagerFragment(0) {
     }
 
     override fun getLayoutRes(): Int {
-        TODO("Not yet implemented")
+        return R.layout.fragment_market;
+    }
+
+    override fun findView() {
+
     }
 
     private fun refresh() {
@@ -99,11 +99,13 @@ class MarketFragment : ViewPagerFragment(0) {
 
         fun bind(topic: Topic) {
             this.topic = topic
-            rootView.setText(if (topic.appInfo.permissions.contains(AppInfo.PERMISSION_ROOT)) {
-                R.string.text_root
-            } else {
-                R.string.text_no_root
-            })
+            rootView.setText(
+                if (topic.appInfo.permissions.contains(AppInfo.PERMISSION_ROOT)) {
+                    R.string.text_root
+                } else {
+                    R.string.text_no_root
+                }
+            )
             titleView.text = topic.title
             avatarView.setUser(topic.user)
             usernameView.text = topic.user.username
@@ -135,21 +137,25 @@ class MarketFragment : ViewPagerFragment(0) {
                 } else {
                     mainPost.upvotes.toString()
                 }
-                upvoteView.setColor(if (mainPost.upvoted) {
-                    ContextCompat.getColor(context, R.color.market_button_selected)
-                } else {
-                    ContextCompat.getColor(context, R.color.market_button_unselected)
-                })
+                upvoteView.setColor(
+                    if (mainPost.upvoted) {
+                        ContextCompat.getColor(context, R.color.market_button_selected)
+                    } else {
+                        ContextCompat.getColor(context, R.color.market_button_unselected)
+                    }
+                )
                 downvoteView.text = if (mainPost.downvotes == 0L) {
                     context.getString(R.string.text_downvote)
                 } else {
                     mainPost.downvotes.toString()
                 }
-                downvoteView.setColor(if (mainPost.downvoted) {
-                    ContextCompat.getColor(context, R.color.market_button_selected)
-                } else {
-                    ContextCompat.getColor(context, R.color.market_button_unselected)
-                })
+                downvoteView.setColor(
+                    if (mainPost.downvoted) {
+                        ContextCompat.getColor(context, R.color.market_button_selected)
+                    } else {
+                        ContextCompat.getColor(context, R.color.market_button_unselected)
+                    }
+                )
             }
 
         }
@@ -158,7 +164,9 @@ class MarketFragment : ViewPagerFragment(0) {
 
     inner class Adapter : RecyclerView.Adapter<TopicViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicViewHolder {
-            return TopicViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_topic, parent, false))
+            return TopicViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_topic, parent, false)
+            )
         }
 
         override fun getItemCount(): Int {

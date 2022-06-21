@@ -188,7 +188,7 @@ public class EditorMenu {
     }
 
     private void startBuildApkActivity() {
-        BuildActivity.intent(mContext)
+        BuildActivity.intent(mContext, BuildActivity.class)
                 .extra(BuildActivity.EXTRA_SOURCE, mEditorView.getUri().getPath())
                 .start();
     }
@@ -291,7 +291,7 @@ public class EditorMenu {
 
 
     private void showLog() {
-        LogActivity.intent(mContext).start();
+        LogActivity.intent(mContext, LogActivity.class).start();
     }
 
     private void showConsole() {

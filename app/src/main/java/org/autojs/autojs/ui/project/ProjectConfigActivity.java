@@ -192,7 +192,7 @@ public class ProjectConfigActivity extends BaseActivity {
     }
 
     void selectIcon() {
-        ShortcutIconSelectActivity.intent(this)
+        ShortcutIconSelectActivity.intent(this,ShortcutIconSelectActivity.class)
                 .startForResult(REQUEST_CODE);
     }
 

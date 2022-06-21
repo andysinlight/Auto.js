@@ -39,11 +39,11 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void findView() {
-        mUserName=$(R.id.username);
-        mPassword=$(R.id.password);
-        mLogin=$(R.id.login);
-        $(R.id.login,view -> login());
-        $(R.id.forgot_password,view -> forgotPassword());
+        mUserName = $(R.id.username);
+        mPassword = $(R.id.password);
+        mLogin = $(R.id.login);
+        $(R.id.login, view -> login());
+        $(R.id.forgot_password, view -> forgotPassword());
     }
 
     @Override
@@ -79,7 +79,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     void forgotPassword() {
-        WebActivity.intent(this)
+        WebActivity.intent(this, WebActivity.class)
                 .extra(WebActivity.EXTRA_URL, NodeBB.BASE_URL + "reset")
                 .extra(Intent.EXTRA_TITLE, getString(R.string.text_reset_password))
                 .start();
@@ -107,7 +107,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_register) {
-            RegisterActivity.intent(this).start();
+            RegisterActivity.intent(this, RegisterActivity.class).start();
             finish();
         }
         return super.onOptionsItemSelected(item);

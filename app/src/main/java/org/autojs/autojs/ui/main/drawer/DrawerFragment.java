@@ -119,7 +119,7 @@ public class DrawerFragment extends BaseFragment {
         mShadow = $(R.id.shadow);
         mDefaultCover = $(R.id.default_cover);
         mDrawerMenu = $(R.id.drawer_menu);
-        $(R.id.avatar,view -> loginOrShowUserInfo());
+        $(R.id.avatar, view -> loginOrShowUserInfo());
     }
 
     @Override
@@ -188,7 +188,7 @@ public class DrawerFragment extends BaseFragment {
                 .subscribe(user -> {
                             if (getActivity() == null)
                                 return;
-                            WebActivity.intent(this.getActivity()).setFragment(this)
+                            WebActivity.intent(this.getActivity(), WebActivity.class).setFragment(this)
                                     .extra(WebActivity.EXTRA_URL, NodeBB.url("user/" + user.getUserslug()))
                                     .extra(Intent.EXTRA_TITLE, user.getUsername())
                                     .start();
@@ -196,7 +196,7 @@ public class DrawerFragment extends BaseFragment {
                         error -> {
                             if (getActivity() == null)
                                 return;
-                            LoginActivity.intent(getActivity()).start();
+                            LoginActivity.intent(getActivity(), LoginActivity.class).start();
                         }
                 );
     }
@@ -231,13 +231,13 @@ public class DrawerFragment extends BaseFragment {
         }
         boolean enabled = AppOpsKt.isOpPermissionGranted(getContext(), AppOpsManager.OPSTR_GET_USAGE_STATS);
         boolean checked = holder.getSwitchCompat().isChecked();
-        if(checked && !enabled){
-            if(new NotAskAgainDialog.Builder(getContext(), "DrawerFragment.usage_stats")
+        if (checked && !enabled) {
+            if (new NotAskAgainDialog.Builder(getContext(), "DrawerFragment.usage_stats")
                     .title(R.string.text_usage_stats_permission)
                     .content(R.string.description_usage_stats_permission)
                     .positiveText(R.string.ok)
                     .dismissListener(dialog -> IntentUtil.requestAppUsagePermission(getContext()))
-                    .show() == null){
+                    .show() == null) {
                 IntentUtil.requestAppUsagePermission(getContext());
             }
         }

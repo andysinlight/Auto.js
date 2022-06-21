@@ -56,7 +56,7 @@ public class SplashActivity extends BaseActivity {
             return;
         }
         mAlreadyEnterNextActivity = true;
-        MainActivity.intent(this).start();
+        MainActivity.intent(this, MainActivity.class).start();
         finish();
     }
 

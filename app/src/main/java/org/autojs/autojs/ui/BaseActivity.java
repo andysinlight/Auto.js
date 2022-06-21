@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.View;
 
@@ -49,6 +51,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         int layoutRes = getLayoutRes();
         if (layoutRes != -1) {
             setContentView(layoutRes);
+            findView();
+            setupView();
         }
     }
 
@@ -88,7 +92,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Nullable
-    public int getLayoutRes(){
+    public int getLayoutRes() {
         return -1;
     }
 
@@ -173,7 +177,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public static ActivityIntentBuilder intent(Context context){
-        return new ActivityIntentBuilder(context,new Intent());
+    public static ActivityIntentBuilder intent(Context context) {
+        Intent intent = new Intent();
+        return new ActivityIntentBuilder(context, intent);
+    }
+
+    public static ActivityIntentBuilder intent(Context context, Class<?> clazz) {
+        return new ActivityIntentBuilder(context, clazz);
     }
 }

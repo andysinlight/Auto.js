@@ -316,7 +316,7 @@ public class MainActivity extends BaseActivity implements OnActivityResultDelega
             if (mDocsSearchItemExpanded) {
                 submitForwardQuery();
             } else {
-                LogActivity.intent(this).start();
+                LogActivity.intent(this, LogActivity.class).start();
             }
             return true;
         }
